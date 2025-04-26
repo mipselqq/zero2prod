@@ -11,4 +11,8 @@ path = "src/main.rs"
 name = "zero2prod"
 
 [dependencies]
+actix-rt = "2.10.0"
 actix-web = "4.10.2"
+
+[dev-dependencies]
+reqwest = "0.12.15"
