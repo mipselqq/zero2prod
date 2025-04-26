@@ -1,14 +1,7 @@
-use actix_web::{App, HttpRequest, HttpResponse, HttpServer, Responder, web};
 use std::io;
-
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
+use zero2prod::run;
 
 #[actix_web::main]
 async fn main() -> Result<(), io::Error> {
-    HttpServer::new(|| App::new().route("/health_check", web::get().to(health_check)))
-        .bind("0.0.0.0:8000")?
-        .run()
-        .await
+    run().await
 }
