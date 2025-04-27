@@ -1,11 +1,12 @@
+use std::net::TcpListener;
+
 #[actix_web::test]
 async fn health_check_works() {
-    spawn_app();
-
+    let adress = spawn_app();
     let client = reqwest::Client::new();
 
     let response = client
-        .get("http://127.0.0.1:8000/health_check")
+        .get(format!("{adress}/health_check"))
         .send()
         .await
         .expect("Test request should execute");
@@ -14,8 +15,12 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-fn spawn_app() {
-    let server = zero2prod::run().expect("Adress should be bound correctly");
+fn spawn_app() -> String {
+    let listener = TcpListener::bind("localhost:0").expect("Adress should bind");
+    let port = listener.local_addr().unwrap().port();
+    let server = zero2prod::run(listener).expect("Adress should be bound correctly");
 
     let _ = actix_rt::spawn(server);
+
+    format!("http://localhost:{port}")
 }
