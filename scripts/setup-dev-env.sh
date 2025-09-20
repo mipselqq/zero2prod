@@ -7,6 +7,17 @@ set -x
 # Exit (-e) on any error (-o pipefail)
 set -eo pipefail
 
+set -x
+set -eo pipefail
+if ! [ -x "$(command -v psql)" ]; then
+    echo >&2 "Error: psql is not installed. User a system package manager to install (postgresql-libs for Arch)"
+    exit 1
+fi
+if ! [ -x "$(command -v sqlx)" ]; then
+    echo >&2 "Error: sqlx-cli is not installed. Use a sysyem package manager or cargo to install."
+    exit 1
+fi
+
 # Use the set variables or assign the defaults
 DB_USER="${POSTGRES_USER:=postgres}"
 DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
@@ -21,3 +32,15 @@ docker run \
     -p "${DB_PORT}":5432 \
     -d postgres \
     postgres -N 1000 # Max conn num for testing only
+
+# Keep pinging Postgres until it's ready to accept commands
+export PGPASSWORD="${DB_PASSWORD}"
+until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+    >&2 echo "Postgres is still unavailable - sleeping"
+    sleep 1
+done
+
+>&2 echo "Postgres is up and running on port ${DB_PORT}!"
+
+export DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+sqlx migrate add create_subscriptions_table
