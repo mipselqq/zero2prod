@@ -1,6 +1,5 @@
 use std::net::TcpListener;
 
-use actix_web::dev::Response;
 use reqwest::{Client, StatusCode};
 use zero2prod::run_app;
 
@@ -21,7 +20,7 @@ async fn subscribe_returns_ok_for_valid_form_data() {
     let addr = spawn_app();
     let client = Client::new();
 
-    let body = "name=le%20guin&enail=ursula_le_guin%40gmail.com";
+    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
     let response = client
         .post(format!("{addr}/subscriptions"))
         .header("Content-Type", "application/x-www-form-urlencoded")
@@ -46,7 +45,7 @@ async fn subscibe_returns_bad_request_for_missing_data() {
     for (invalid_body, error_message) in test_cases {
         let response = client
             .post(format!("{addr}/subscriptions"))
-            .header("Content-Type", "application/x-www-urlencoded")
+            .header("Content-Type", "application/x-www-form-urlencoded")
             .body(invalid_body)
             .send()
             .await
