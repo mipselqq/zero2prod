@@ -33,7 +33,6 @@ then
         -p "${DB_PORT}":5432 \
         -d postgres \
         postgres -N 1000
-        || true
 fi
 
 sleep 2
