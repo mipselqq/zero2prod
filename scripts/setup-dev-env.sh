@@ -7,8 +7,6 @@ set -x
 # Exit (-e) on any error (-o pipefail)
 set -eo pipefail
 
-set -x
-set -eo pipefail
 if ! [ -x "$(command -v psql)" ]; then
     echo >&2 "Error: psql is not installed. User a system package manager to install (postgresql-libs for Arch)"
     exit 1
@@ -25,14 +23,18 @@ DB_NAME="${POSTGRES_DB:=newsletter}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 DB_HOST="${POSTGRES_HOST:=localhost}"
 
-docker run \
-    --name pg \
-    -e POSTGRES_USER=${DB_USER} \
-    -e POSTGRES_PASSWORD=${DB_PASSWORD} \
-    -e POSTGRES_DB=${DB_NAME} \
-    -p "${DB_PORT}":5432 \
-    -d postgres \
-    postgres -N 1000 # Max conn num for testing only
+if [[ -z "${SKIP_DOCKER}" ]]
+then
+    docker run \
+        --name pg \
+        -e POSTGRES_USER=${DB_USER} \
+        -e POSTGRES_PASSWORD=${DB_PASSWORD} \
+        -e POSTGRES_DB=${DB_NAME} \
+        -p "${DB_PORT}":5432 \
+        -d postgres \
+        postgres -N 1000
+        || true
+fi
 
 sleep 2
 
