@@ -2785,11 +2785,11 @@ dependencies = [
  "actix-web",
  "config",
  "env_logger",
- "log",
  "reqwest",
  "serde",
  "sqlx",
  "tokio",
+ "tracing",
  "uuid",
 ]
 

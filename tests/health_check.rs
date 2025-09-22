@@ -79,7 +79,7 @@ async fn subscribe_returns_bad_request_for_missing_data() {
 
 struct TestApp {
     pub address: String,
-    pub db_pool: PgPool,
+    pub _db_pool: PgPool,
 }
 
 async fn spawn_app() -> TestApp {
@@ -97,7 +97,7 @@ async fn spawn_app() -> TestApp {
 
     TestApp {
         address: format!("http://localhost:{port}"),
-        db_pool: connection_pool,
+        _db_pool: connection_pool,
     }
 }
 
