@@ -12,7 +12,7 @@ pub struct DatabaseSettings {
     pub password: String,
     pub port: u16,
     pub host: String,
-    pub database_name: String,
+    pub name: String,
 }
 
 pub fn read_configuration() -> Result<Settings, config::ConfigError> {
@@ -28,14 +28,21 @@ pub fn read_configuration() -> Result<Settings, config::ConfigError> {
 
 impl DatabaseSettings {
     pub fn format_connection_string(&self) -> String {
+        let connection_string_without_db = self.format_connection_string_without_db();
+        let database_name = &self.name;
+
+        format!("{connection_string_without_db}/{database_name}")
+    }
+
+    pub fn format_connection_string_without_db(&self) -> String {
         let Self {
             username,
             password,
             host,
             port,
-            database_name,
+            name: _,
         } = self;
 
-        format!("postgres://{username}:{password}@{host}:{port}/{database_name}")
+        format!("postgres://{username}:{password}@{host}:{port}")
     }
 }
