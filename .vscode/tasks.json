@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "cargo check",
+			"type": "shell",
+			"command": "cargo check",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "cargo test",
+			"type": "shell",
+			"command": "cargo test",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "cargo check (post-chrono removal)",
+			"type": "shell",
+			"command": "cargo check",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "cargo test (post-chrono removal)",
+			"type": "shell",
+			"command": "cargo test",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		}
+	]
+}
