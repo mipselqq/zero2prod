@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+[dependencies.env_logger]
+version = "0.11.8"
+default-features = false
+
 [dependencies.actix-web]
 version = "4.11.0"
 default-features = false
