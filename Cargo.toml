@@ -4,12 +4,18 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-actix-web = "4.11.0"
+actix-web = { version = "4.11.0", default-features = false, features = [
+    "macros",
+] }
 config = "0.15.16"
-reqwest = "0.12.22"
-serde = { version = "1.0.225", features = ["derive"] }
+reqwest = { version = "0.12.23", default-features = false, features = [
+    "rustls-tls",
+] }
+serde = { version = "1.0.226", features = ["derive"] }
 serde_json = "1.0.145"
 tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4.22", default-features = false, features = ["clock"] }
 [dependencies.sqlx]
 version = "0.8.6"
 default-features = false
@@ -27,3 +33,18 @@ path = "src/lib.rs"
 [[bin]]
 path = "src/main.rs"
 name = "zero2prod"
+
+[profile.dev]
+opt-level = 1
+debug = true
+codegen-units = 16
+lto = false
+incremental = true
+panic = "unwind"
+
+[profile.release]
+opt-level = 3
+debug = false
+codegen-units = 1
+lto = "thin"
+panic = "unwind"
