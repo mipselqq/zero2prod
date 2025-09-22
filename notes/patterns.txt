@@ -1,3 +1,0 @@
-RAII means that some resouce (memory, net socket, file handle) is acquired when an object is initialized and
-released when an object is deinitialized. Simply saying, objects manage their "heavy" resources.
-An initializer is not responsible for acquisition, but an object itself.
