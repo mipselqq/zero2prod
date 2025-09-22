@@ -10,5 +10,5 @@ async fn main() -> Result<(), std::io::Error> {
     let configuration = read_configuration().expect("Configuration should be red");
     let address = format!("0.0.0.0:{}", configuration.application_port);
 
-    run_app(TcpListener::bind("0.0.0.0:8000").expect("OS should bind listener"))?.await
+    run_app(TcpListener::bind(address).expect("OS should bind listener"))?.await
 }
