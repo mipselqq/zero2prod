@@ -1,6 +1,6 @@
 use actix_web::{HttpResponse, Responder, web};
 use sqlx::{PgPool, query, types::chrono::Utc};
-use tracing::{error, info, info_span};
+use tracing::{debug, error, info};
 use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
@@ -9,22 +9,20 @@ pub struct FormData {
     name: String,
 }
 
+#[tracing::instrument(
+    name = "Adding a new subscriber",
+    skip(connection, form),
+    fields(subscriber_email = %form.email, subscriber_name = %form.name)
+)]
 pub async fn subscribe(form: web::Form<FormData>, connection: web::Data<PgPool>) -> impl Responder {
     let subscriber_name = &form.name;
     let subscriber_email = &form.email;
-
-    let req_span = info_span!(
-        "Adding as new subsciber",
-        %subscriber_email,
-        %subscriber_name
-    );
-    let _req_span_guard = req_span.enter();
 
     if subscriber_email.is_empty() || subscriber_name.is_empty() {
         return HttpResponse::BadRequest();
     }
 
-    info!("Saving new subscriber in Postgres");
+    debug!("Saving new subscriber in Postgres");
     let query_result = query!(
         r#"
         INSERT INTO subscriptions (id, email, name, subscribed_at)
@@ -40,7 +38,7 @@ pub async fn subscribe(form: web::Form<FormData>, connection: web::Data<PgPool>)
 
     match query_result {
         Ok(_) => {
-            info!("Saved new subscriber in Postgres");
+            debug!("Saved new subscriber in Postgres");
             HttpResponse::Ok()
         }
         Err(e) => {
