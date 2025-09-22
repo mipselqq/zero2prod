@@ -1,5 +1,5 @@
 use reqwest::{Client, StatusCode};
-use sqlx::{Connection, PgConnection, PgPool};
+use sqlx::{Connection, PgConnection, PgPool, query};
 use std::net::TcpListener;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
@@ -40,7 +40,7 @@ async fn subscribe_returns_ok_for_valid_form_data() {
 
     assert_eq!(StatusCode::OK, response.status());
 
-    let saved = sqlx::query!("SELECT email, name FROM subscriptions")
+    let saved = query!("SELECT email, name FROM subscriptions")
         .fetch_one(&connection)
         .await
         .expect("Postgres should fetch");
@@ -107,7 +107,7 @@ async fn configure_db(config: Settings) -> PgPool {
             .await
             .expect("Postgres should connect");
 
-    sqlx::query(&format!(r#"CREATE DATABASE "{}""#, config.database.name))
+    query(&format!(r#"CREATE DATABASE "{}""#, config.database.name))
         .execute(&mut connection)
         .await
         .expect("Database should be created");

@@ -1,6 +1,7 @@
 use actix_web::{HttpResponse, Responder};
+use tracing::info;
 
 pub async fn health_check() -> impl Responder {
-    tracing::info!("Received health check request");
+    info!("Received health check request");
     HttpResponse::Ok()
 }

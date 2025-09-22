@@ -5,20 +5,20 @@ An initializer is not responsible for acquisition, but an object itself.
 ```rust
 fn process_multiple_items() {
     // 1. We create a span only ONCE
-    let processing_span = tracing::info_span!("Processing batch");
+    let processing_span = info_span!("Processing batch");
 
     for item_id in 0..3 {
         // 2. We enter the span
         let _item_guard = processing_span.enter();
 
-        tracing::info!(item_id, "Working on an item");
+        info!(item_id, "Working on an item");
 
         // 3. Here `_item_guard` is dead. We're out of the span.
         //    But `processing_span` is still alive and can be REUSEED
     }
 
     let _final_guard = processing_span.enter();
-    tracing::info!("Finished processing batch.");
+    info!("Finished processing batch.");
     // Here `_final_guard` is dead
 
 } // The span is also dead
