@@ -1,2 +1,4 @@
 The difference between a mock db and a production db may be huge
 so avoid substitution.
+
+Always restart your shell/pc when installing huge software, because the hot installation may and will not work often.
