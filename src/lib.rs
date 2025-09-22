@@ -3,21 +3,10 @@ pub mod routes;
 pub mod startup;
 
 use actix_web::{App, HttpResponse, HttpServer, Responder, dev::Server, web};
+use routes::subscribe;
 use std::net::TcpListener;
 
-#[derive(serde::Deserialize)]
-pub struct FormData {
-    email: String,
-    name: String,
-}
-
-async fn subscribe(_form: web::Form<FormData>) -> impl Responder {
-    HttpResponse::Ok()
-}
-
-async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
-}
+use crate::routes::health_check;
 
 pub fn run_app(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
