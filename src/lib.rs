@@ -2,20 +2,6 @@ pub mod configuration;
 pub mod routes;
 pub mod startup;
 
-use actix_web::{App, HttpServer, dev::Server, web};
-use routes::subscribe;
-use std::net::TcpListener;
-
-use crate::routes::health_check;
-
-pub fn run_app(listener: TcpListener) -> Result<Server, std::io::Error> {
-    let server = HttpServer::new(|| {
-        App::new()
-            .route("/health_check", web::get().to(health_check))
-            .route("/subscriptions", web::post().to(subscribe))
-    })
-    .listen(listener)?
-    .run();
-
-    Ok(server)
-}
+pub use configuration::*;
+pub use routes::*;
+pub use startup::*;
