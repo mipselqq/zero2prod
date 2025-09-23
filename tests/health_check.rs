@@ -19,15 +19,8 @@ async fn health_check_returns_success() {
 
 #[tokio::test]
 async fn subscribe_returns_ok_for_valid_form_data() {
-    let TestApp { address, .. } = spawn_app().await;
+    let TestApp { address, db_pool } = spawn_app().await;
     let client = Client::new();
-
-    let configuration = read_configuration().expect("Failed to read configuration");
-    let connection_string = configuration.database.format_connection_string();
-
-    let connection = PgPool::connect(&connection_string)
-        .await
-        .expect("Postgres should connect");
 
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
     let response = client
@@ -41,7 +34,7 @@ async fn subscribe_returns_ok_for_valid_form_data() {
     assert_eq!(StatusCode::OK, response.status());
 
     let saved = query!("SELECT email, name FROM subscriptions")
-        .fetch_one(&connection)
+        .fetch_one(&db_pool)
         .await
         .expect("Postgres should fetch");
 
@@ -79,7 +72,7 @@ async fn subscribe_returns_bad_request_for_missing_data() {
 
 struct TestApp {
     pub address: String,
-    pub _db_pool: PgPool,
+    pub db_pool: PgPool,
 }
 
 async fn spawn_app() -> TestApp {
@@ -97,7 +90,7 @@ async fn spawn_app() -> TestApp {
 
     TestApp {
         address: format!("http://localhost:{port}"),
-        _db_pool: connection_pool,
+        db_pool: connection_pool,
     }
 }
 
