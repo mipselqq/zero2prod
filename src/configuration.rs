@@ -16,6 +16,11 @@ pub struct DatabaseSettings {
     pub name: String,
 }
 
+pub struct ApplicationSettings {
+    pub port: u16,
+    pub host: String,
+}
+
 pub fn read_configuration() -> Result<Settings, config::ConfigError> {
     let settings = config::Config::builder()
         .add_source(config::File::new(
