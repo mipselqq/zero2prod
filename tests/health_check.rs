@@ -79,8 +79,13 @@ struct TestApp {
 }
 
 static TRACING: Lazy<()> = Lazy::new(|| {
-    let subscriber = build_subscriber("test", "debug");
-    setup_subscriber(subscriber);
+    if std::env::var("TEST_LOG").is_ok() {
+        let s = build_subscriber("test", "info", std::io::stdout);
+        setup_subscriber(s);
+    } else {
+        let s = build_subscriber("test", "info", std::io::sink);
+        setup_subscriber(s);
+    };
 });
 
 async fn spawn_app() -> TestApp {

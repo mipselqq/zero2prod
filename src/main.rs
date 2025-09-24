@@ -2,13 +2,14 @@ mod configuration;
 
 use crate::configuration::read_configuration;
 use sqlx::PgPool;
+use std::io;
 use std::net::TcpListener;
 use zero2prod::run_app;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let subscriber = build_subscriber("zero2prod", "info");
+    let subscriber = build_subscriber("zero2prod", "info", io::stdout);
     setup_subscriber(subscriber);
 
     let configuration = read_configuration().expect("Configuration should be red");
