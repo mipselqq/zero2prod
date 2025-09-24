@@ -29,15 +29,13 @@ pub fn read_configuration() -> Result<Settings, config::ConfigError> {
 
 impl DatabaseSettings {
     pub fn format_connection_string(&self) -> String {
-        format!(
-            "postgres://{}:{}@{}:{}/{}",
-            self.username,
-            self.password.expose_secret(),
-            self.host,
-            self.port,
-            self.name
-        )
+        let connection_string_without_db = self.format_connection_string_without_db();
+        let connection_string_without_db = connection_string_without_db.expose_secret();
+        let database_name = &self.name;
+
+        format!("{connection_string_without_db}/{database_name}")
     }
+
     pub fn format_connection_string_without_db(&self) -> SecretString {
         let Self {
             username,
