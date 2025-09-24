@@ -1,9 +1,8 @@
-use actix_web::http::header::TRAILER;
 use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
+use secrecy::ExposeSecret;
 use sqlx::{Connection, PgConnection, PgPool, query};
 use std::net::TcpListener;
-use tracing::subscriber;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
@@ -110,10 +109,11 @@ async fn spawn_app() -> TestApp {
 }
 
 async fn configure_db(config: Settings) -> PgPool {
-    let mut connection =
-        PgConnection::connect(&config.database.format_connection_string_without_db())
-            .await
-            .expect("Postgres should connect");
+    let connection_string_without_db = &config.database.format_connection_string_without_db();
+
+    let mut connection = PgConnection::connect(connection_string_without_db.expose_secret())
+        .await
+        .expect("Postgres should connect");
 
     query(&format!(r#"CREATE DATABASE "{}""#, config.database.name))
         .execute(&mut connection)

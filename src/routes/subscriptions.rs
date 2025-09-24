@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, Responder, error, web};
+use actix_web::{HttpResponse, Responder, web};
 use sqlx::{PgPool, query, types::chrono::Utc};
 use tracing::{error, instrument};
 use uuid::Uuid;
