@@ -1,10 +1,13 @@
+use actix_web::http::header::TRAILER;
+use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
 use sqlx::{Connection, PgConnection, PgPool, query};
 use std::net::TcpListener;
+use tracing::subscriber;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
+use zero2prod::telemetry::{build_subscriber, setup_subscriber};
 use zero2prod::{Settings, run_app};
-
 #[tokio::test]
 async fn health_check_returns_success() {
     let TestApp { address, .. } = spawn_app().await;
@@ -75,7 +78,14 @@ struct TestApp {
     pub db_pool: PgPool,
 }
 
+static TRACING: Lazy<()> = Lazy::new(|| {
+    let subscriber = build_subscriber("test", "debug");
+    setup_subscriber(subscriber);
+});
+
 async fn spawn_app() -> TestApp {
+    Lazy::force(&TRACING);
+
     let listener =
         TcpListener::bind("0.0.0.0:0").expect("OS should bind app listener to random port");
     let port = listener.local_addr().unwrap().port();
