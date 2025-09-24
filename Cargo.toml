@@ -13,6 +13,8 @@ actix-web = { version = "4.11.0", default-features = false }
 tracing-subscriber = { version = "0.3.20", default-features = false, features = ["registry", "env-filter"] }
 sqlx = { version = "0.8.6", default-features = false, features = [
     "runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono" ] }
+tracing-log = { version = "0.2.0", default-features = true, features = ["log-tracer"] }
+tracing-bunyan-formatter = { version = "0.3.10", default-features = false }
 
 [dev-dependencies]
 reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
