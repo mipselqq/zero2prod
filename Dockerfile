@@ -5,6 +5,6 @@ COPY . .
 
 VOLUME /target /app/targets
 
-ENV SQLX_OFFLINE true
+ENV SQLX_OFFLINE=true
 RUN cargo build --release
 ENTRYPOINT ["./target/release/zero2prod"]
