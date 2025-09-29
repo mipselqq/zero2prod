@@ -18,7 +18,5 @@ pub fn run_app(listener: TcpListener, connection: PgPool) -> Result<Server, std:
     .listen(listener)?
     .run();
 
-    true;
-
     Ok(server)
 }

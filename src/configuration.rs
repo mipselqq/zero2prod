@@ -1,4 +1,4 @@
-use std::{env, fmt::format};
+use std::env;
 
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;

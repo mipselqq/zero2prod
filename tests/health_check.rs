@@ -7,6 +7,7 @@ use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
 use zero2prod::{Settings, run_app};
+
 #[tokio::test]
 async fn health_check_returns_success() {
     let TestApp { address, .. } = spawn_app().await;
@@ -100,7 +101,7 @@ async fn spawn_app() -> TestApp {
     let connection_pool = configure_db(config).await;
     let server = run_app(listener, connection_pool.clone()).expect("App should run");
 
-    let _ = tokio::spawn(server);
+    tokio::spawn(server);
 
     TestApp {
         address: format!("http://localhost:{port}"),
