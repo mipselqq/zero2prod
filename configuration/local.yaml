@@ -1,0 +1,2 @@
+application:
+  host: 0.0.0.0 # Local is also this to escape WSL
