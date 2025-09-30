@@ -14,3 +14,12 @@ Musl cross-compilation for alpine doesn't seem to worth it, bc it increases comp
 
 Both ENTRYPOINT and CMD can be used to define a `command` to run when running a container, but the former can be extended, and the latter can be overrided when specifying
 docker run command arguments.
+
+Docker builds are immutable, no data can be deleted after some layer was created. Deletion will only create a thin layer with "whiteout files", and the image will pretend they don't exist.
+
+Why impose such a stupid limitation? Well, caching is not really possible without immutability. TODO: dig deeper.
+
+Btw, this is like git, which is also immutable!
+
+Also, there's an option "docker build --squash" that
+squashes layers into a clean one, bug again, you lose caching.

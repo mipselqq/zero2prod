@@ -1,0 +1,1 @@
+Git commits are immutable. Rebase replaces commits, but not mutates them.
