@@ -19,6 +19,7 @@ pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> im
         Ok(_) => HttpResponse::Ok(),
         Err(_) => HttpResponse::InternalServerError(),
     }
+    .await // What the hell this macro magic is?
 }
 
 #[instrument(name = "Saving new subscriber details in Postgres", skip(pool, form))]
