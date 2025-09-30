@@ -72,6 +72,34 @@ async fn subscribe_returns_bad_request_for_missing_data() {
     }
 }
 
+#[tokio::test]
+async fn subscribe_returns_ok_for_present_empty_fields() {
+    let TestApp { address, .. } = spawn_app().await;
+    let client = reqwest::Client::new();
+
+    let test_cases = vec![
+        ("name=&email=ursula_le_guin%40gmail.com", "empty name"),
+        ("name=Ursula&email=", "empty email"),
+        ("name=Ursula&email=definitely-not-an-email", "invalid email"),
+    ];
+
+    for (invalid_body, error_message) in test_cases {
+        let response = client
+            .post(format!("{address}/subscriptions"))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(invalid_body)
+            .send()
+            .await
+            .expect("Request should execute");
+
+        assert_eq!(
+            StatusCode::BAD_REQUEST,
+            response.status(),
+            "App didn't return BAD_REQUEST when payload was {error_message}"
+        )
+    }
+}
+
 struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
