@@ -14,7 +14,7 @@ async fn main() -> Result<(), std::io::Error> {
 
     let configuration = read_configuration().expect("Configuration should be red");
 
-    let connection = PgPool::connect(&configuration.database.format_connection_string())
+    let connection = PgPool::connect_with(configuration.database.build_connect_options())
         .await
         .expect("Postgres should connect");
 

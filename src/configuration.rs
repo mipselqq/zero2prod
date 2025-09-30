@@ -1,5 +1,6 @@
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;
+use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use std::env;
 
 #[derive(Deserialize)]
@@ -15,6 +16,7 @@ pub struct DatabaseSettings {
     pub port: u16,
     pub host: String,
     pub name: String,
+    pub require_ssl: bool,
 }
 
 #[derive(Deserialize)]
@@ -78,24 +80,22 @@ impl TryFrom<String> for Environment {
 }
 
 impl DatabaseSettings {
-    pub fn format_connection_string(&self) -> String {
-        let connection_string_without_db = self.format_connection_string_without_db();
-        let connection_string_without_db = connection_string_without_db.expose_secret();
-        let database_name = &self.name;
-
-        format!("{connection_string_without_db}/{database_name}")
+    pub fn build_connect_options(&self) -> PgConnectOptions {
+        self.build_connect_options_nodb().database(&self.name)
     }
 
-    pub fn format_connection_string_without_db(&self) -> SecretString {
-        let Self {
-            username,
-            password,
-            host,
-            port,
-            name: _,
-        } = self;
-        let password = password.expose_secret();
+    pub fn build_connect_options_nodb(&self) -> PgConnectOptions {
+        let ssl_mode = if self.require_ssl {
+            PgSslMode::Require
+        } else {
+            PgSslMode::Prefer
+        };
 
-        format!("postgres://{username}:{password}@{host}:{port}").into()
+        PgConnectOptions::new()
+            .host(&self.host)
+            .username(&self.username)
+            .password(self.password.expose_secret())
+            .port(self.port)
+            .ssl_mode(ssl_mode)
     }
 }
