@@ -13,6 +13,7 @@ FROM rust:1.90-slim AS builder
 WORKDIR /app
 COPY . .
 COPY --from=cacher /app/target ./target
+ENV SQLX_OFFLINE=true
 RUN cargo build --release
 
 FROM debian:bookworm-slim AS runtime

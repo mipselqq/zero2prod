@@ -1,7 +1,6 @@
-use std::env;
-
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;
+use std::env;
 
 #[derive(Deserialize)]
 pub struct Settings {
