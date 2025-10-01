@@ -18,7 +18,7 @@ pub struct FormData {
 )]
 pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> impl Responder {
     let new_subscriber = NewSubscriber {
-        name: SubscriberName::parse(form.0.name), // TODO: figure out why form.0 lets to move but form doesnt
+        name: SubscriberName::parse(form.0.name).expect("Name validation should succeed"), // TODO: figure out why form.0 lets to move but form doesnt
         email: form.0.email,
     };
 
