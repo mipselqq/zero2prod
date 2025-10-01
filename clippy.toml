@@ -1,0 +1,3 @@
+[lints.clippy]
+# This rule works poorly with tracing::instrument macro
+async-yields-async = "allow"
