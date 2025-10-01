@@ -2,7 +2,6 @@ use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
 use sqlx::{Connection, PgConnection, PgPool, query};
 use std::net::TcpListener;
-use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
@@ -74,7 +73,7 @@ async fn subscribe_returns_bad_request_for_missing_data() {
 }
 
 #[tokio::test]
-async fn subscribe_returns_ok_for_present_empty_fields() {
+async fn subscribe_returns_bad_request_for_present_empty_fields() {
     let TestApp { address, .. } = spawn_app().await;
     let client = reqwest::Client::new();
 
