@@ -2,6 +2,7 @@ use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
 use sqlx::{Connection, PgConnection, PgPool, query};
 use std::net::TcpListener;
+use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
