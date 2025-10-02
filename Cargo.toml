@@ -24,6 +24,10 @@ validator = { version = "0.20.0", default-features = false }
 
 [dev-dependencies]
 reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
+fake = { version = "4.4.0", default-features = false, features = ["email_address"]}
+quickcheck = { version = "1.0.3", default-features = false }
+quickcheck_macros = { version = "1.1.0", default-features = false }
+
 sqlx = { version = "0.8.6", default-features = false, features = [
     "runtime-tokio-rustls","macros", "postgres","uuid","chrono", "migrate" ] }
 
