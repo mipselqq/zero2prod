@@ -1,14 +1,7 @@
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::SubscriberEmail;
-
 #[derive(Debug)]
 pub struct SubscriberName(String);
-
-pub struct NewSubscriber {
-    pub email: SubscriberEmail,
-    pub name: SubscriberName,
-}
 
 impl SubscriberName {
     pub fn parse(name: String) -> Result<SubscriberName, String> {
