@@ -24,7 +24,6 @@ validator = { version = "0.20.0", default-features = false }
 reqwest = { version = "0.12.23", default-features = false, features = ["json", "rustls-tls"] }
 
 [dev-dependencies]
-reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
 fake = { version = "4.4.0", default-features = false, features = ["email_address"]}
 proptest = { version = "1", default-features = false, features = ["std"] }
 sqlx = { version = "0.8.6", default-features = false, features = [
