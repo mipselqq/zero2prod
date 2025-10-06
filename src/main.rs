@@ -2,7 +2,7 @@ use sqlx::PgPool;
 use std::io;
 use std::net::TcpListener;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
-use zero2prod::{EmailClient, read_configuration, run_app};
+use zero2prod::{EmailClient, SubscriberEmail, read_configuration, run_app};
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
