@@ -73,7 +73,7 @@ async fn subscribe_returns_bad_request_for_missing_data() {
 }
 
 #[tokio::test]
-async fn subscribe_returns_ok_for_present_empty_fields() {
+async fn subscribe_returns_bad_request_for_present_empty_fields() {
     let TestApp { address, .. } = spawn_app().await;
     let client = reqwest::Client::new();
 
