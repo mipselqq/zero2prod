@@ -37,3 +37,7 @@ panic = "unwind"
 [profile.release]
 lto = "thin"
 panic = "unwind"
+
+[lints.clippy]
+# This rule works poorly with tracing::instrument macro
+async-yields-async = "allow"
