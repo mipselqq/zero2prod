@@ -17,14 +17,9 @@ pub struct FormData {
     fields(subscriber_email = %form.email, subscriber_name = %form.name)
 )]
 pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> impl Responder {
-    let Ok(name) = SubscriberName::parse(form.0.name) else {
+    let Ok(new_subscriber) = parse_subcriber(form.0) else {
         return HttpResponse::BadRequest();
     };
-    let Ok(email) = SubscriberEmail::parse(form.0.email) else {
-        return HttpResponse::BadRequest();
-    };
-
-    let new_subscriber = NewSubscriber { name, email };
 
     match insert_subscriber(&pool, new_subscriber).await {
         Ok(_) => HttpResponse::Ok(),
@@ -32,6 +27,12 @@ pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> im
     }
 }
 
+fn parse_subcriber(form: FormData) -> Result<NewSubscriber, String> {
+    let name = SubscriberName::parse(form.name)?;
+    let email = SubscriberEmail::parse(form.email)?;
+
+    Ok(NewSubscriber { email, name })
+}
 #[instrument(
     name = "Saving new subscriber details in Postgres",
     skip(pool, new_subscriber)
