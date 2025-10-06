@@ -5,7 +5,7 @@ use std::net::TcpListener;
 use uuid::Uuid;
 use zero2prod::configuration::read_configuration;
 use zero2prod::telemetry::{build_subscriber, setup_subscriber};
-use zero2prod::{Settings, run_app};
+use zero2prod::{EmailClient, Settings, run_app};
 
 #[tokio::test]
 async fn health_check_returns_success() {
@@ -122,11 +122,18 @@ async fn spawn_app() -> TestApp {
         TcpListener::bind("0.0.0.0:0").expect("OS should bind app listener to random port");
     let port = listener.local_addr().unwrap().port();
 
-    let mut config = read_configuration().expect("Configuration should be read");
-    config.database.name = Uuid::new_v4().to_string();
+    let mut configuration = read_configuration().expect("Configuration should be read");
+    configuration.database.name = Uuid::new_v4().to_string();
 
-    let connection_pool = configure_db(config).await;
-    let server = run_app(listener, connection_pool.clone()).expect("App should run");
+    let connection_pool = configure_db(&configuration).await;
+
+    let sender_email = configuration
+        .email_client
+        .sender()
+        .expect("Invalid sender email address.");
+
+    let email_client = EmailClient::new(configuration.email_client.base_url, sender_email);
+    let server = run_app(listener, connection_pool.clone(), email_client).expect("App should run");
 
     tokio::spawn(server);
 
@@ -136,7 +143,7 @@ async fn spawn_app() -> TestApp {
     }
 }
 
-async fn configure_db(config: Settings) -> PgPool {
+async fn configure_db(config: &Settings) -> PgPool {
     let mut connection = PgConnection::connect_with(&config.database.build_connect_options_nodb())
         .await
         .expect("Postgres should connect");

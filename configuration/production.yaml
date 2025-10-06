@@ -1,5 +1,5 @@
 application:
   host: 0.0.0.0
-
 database:
   require_ssl: false
+sender_email: sandboxeddff7d118394e24bebb8990b9ff352d.mailgun.org
