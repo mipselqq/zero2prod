@@ -14,4 +14,5 @@ public class MGSamples {
       .asJson();
     return request.getBody();
   }
-  
+  }
+}

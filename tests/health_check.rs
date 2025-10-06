@@ -1,3 +1,4 @@
+use fake::{Fake, Faker};
 use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
 use sqlx::{Connection, PgConnection, PgPool, query};
@@ -132,7 +133,11 @@ async fn spawn_app() -> TestApp {
         .sender()
         .expect("Invalid sender email address.");
 
-    let email_client = EmailClient::new(configuration.email_client.base_url, sender_email);
+    let email_client = EmailClient::new(
+        configuration.email_client.base_url,
+        sender_email,
+        Faker.fake::<String>().into(),
+    );
     let server = run_app(listener, connection_pool.clone(), email_client).expect("App should run");
 
     tokio::spawn(server);
