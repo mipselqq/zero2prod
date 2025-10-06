@@ -1,10 +1,12 @@
 use unicode_segmentation::UnicodeSegmentation;
 
+use crate::SubscriberEmail;
+
 #[derive(Debug)]
 pub struct SubscriberName(String);
 
 pub struct NewSubscriber {
-    pub email: String,
+    pub email: SubscriberEmail,
     pub name: SubscriberName,
 }
 
